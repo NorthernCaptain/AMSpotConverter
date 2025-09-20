@@ -7,24 +7,38 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 
-import 'package:am_spot_converter/main.dart';
+import 'package:am_spot_converter/providers/conversion_provider.dart';
+import 'package:am_spot_converter/services/music_service_factory.dart';
+import 'package:am_spot_converter/services/conversion_service.dart';
+import 'package:am_spot_converter/screens/home_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('App launches smoke test', (WidgetTester tester) async {
+    // Create mock services for testing using factory
+    final spotifyService = MusicServiceFactory.createMockSpotifyService();
+    final appleMusicService = MusicServiceFactory.createMockAppleMusicService();
+
+    final conversionService = ConversionService(
+      spotifyService: spotifyService,
+      appleMusicService: appleMusicService,
+    );
+
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ChangeNotifierProvider(
+          create: (context) => ConversionProvider(conversionService),
+          child: const HomeScreen(),
+        ),
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify that the welcome message is displayed.
+    expect(find.text('Welcome to AMSpotConverter!'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that the input field hint is displayed.
+    expect(find.text('Paste Spotify or Apple Music link here...'), findsOneWidget);
   });
 }
