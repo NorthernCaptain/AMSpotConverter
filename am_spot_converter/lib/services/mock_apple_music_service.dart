@@ -1,7 +1,7 @@
 import '../models/song.dart';
 import 'base_music_service.dart';
 
-class MockAppleMusicService implements AppleMusicServiceInterface {
+class MockAppleMusicService implements BaseMusicService {
 
   final String teamId;
   final String keyId;
@@ -15,18 +15,13 @@ class MockAppleMusicService implements AppleMusicServiceInterface {
 
   @override
   Future<Song?> getTrackById(String trackId) async {
-    return await getSongById(trackId);
-  }
-
-  @override
-  Future<Song?> getSongById(String songId) async {
     // Simulate network delay
     await Future.delayed(const Duration(milliseconds: 600));
 
-    // Return mock data based on songId
-    if (songId == '1677770551') {
+    // Return mock data based on trackId
+    if (trackId == '1677770551') {
       return Song(
-        id: songId,
+        id: trackId,
         name: 'Flowers',
         artist: 'Miley Cyrus',
         album: 'Endless Summer Vacation',
@@ -35,9 +30,9 @@ class MockAppleMusicService implements AppleMusicServiceInterface {
         externalUrl: 'https://music.apple.com/us/song/flowers/1677770551',
         platform: 'apple_music',
       );
-    } else if (songId == '1440929778') {
+    } else if (trackId == '1440929778') {
       return Song(
-        id: songId,
+        id: trackId,
         name: 'Cruel Summer',
         artist: 'Taylor Swift',
         album: 'Lover',
@@ -50,13 +45,13 @@ class MockAppleMusicService implements AppleMusicServiceInterface {
 
     // Default song for unknown IDs
     return Song(
-      id: songId,
+      id: trackId,
       name: 'Sample Song',
       artist: 'Sample Artist',
       album: 'Sample Album',
       imageUrl: 'https://is1-ssl.mzstatic.com/image/thumb/Music/v4/sample/640x640bb.jpg',
       previewUrl: null,
-      externalUrl: 'https://music.apple.com/us/song/sample/$songId',
+      externalUrl: 'https://music.apple.com/us/song/sample/$trackId',
       platform: 'apple_music',
     );
   }
@@ -160,11 +155,6 @@ class MockAppleMusicService implements AppleMusicServiceInterface {
 
   @override
   String? extractTrackIdFromUrl(String url) {
-    return extractSongIdFromUrl(url);
-  }
-
-  @override
-  String? extractSongIdFromUrl(String url) {
     final RegExp songRegex = RegExp(r'music\.apple\.com/[^/]+/song/[^/]+/(\d+)');
     final match = songRegex.firstMatch(url);
     return match?.group(1);

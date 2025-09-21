@@ -1,7 +1,7 @@
 import '../models/song.dart';
 import 'base_music_service.dart';
 
-class MockSpotifyService implements SpotifyServiceInterface {
+class MockSpotifyService implements BaseMusicService {
 
   final String clientId;
   final String clientSecret;

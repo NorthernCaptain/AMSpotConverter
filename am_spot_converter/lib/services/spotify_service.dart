@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/song.dart';
 import 'base_music_service.dart';
 
-class SpotifyService implements SpotifyServiceInterface {
+class SpotifyService implements BaseMusicService {
   static const String _baseUrl = 'https://api.spotify.com/v1';
   static const String _authUrl = 'https://accounts.spotify.com/api/token';
 

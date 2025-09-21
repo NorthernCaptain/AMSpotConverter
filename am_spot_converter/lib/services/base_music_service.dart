@@ -23,18 +23,3 @@ abstract class BaseMusicService {
   String get platformName;
 }
 
-abstract class SpotifyServiceInterface extends BaseMusicService {
-  @override
-  String get platformName => 'spotify';
-}
-
-abstract class AppleMusicServiceInterface extends BaseMusicService {
-  @override
-  String get platformName => 'apple_music';
-
-  /// Apple Music specific method for getting song by ID
-  Future<Song?> getSongById(String songId);
-
-  /// Apple Music specific method for extracting song ID from URL
-  String? extractSongIdFromUrl(String url);
-}

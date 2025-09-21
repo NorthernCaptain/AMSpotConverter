@@ -31,7 +31,7 @@ class MusicServiceFactory {
     return config == 'all' || config == 'apple';
   }
 
-  static SpotifyServiceInterface createSpotifyService() {
+  static BaseMusicService createSpotifyService() {
     if (_shouldUseMockForSpotify()) {
       return MockSpotifyService(
         clientId: 'mock_spotify_client_id',
@@ -45,7 +45,7 @@ class MusicServiceFactory {
     }
   }
 
-  static AppleMusicServiceInterface createAppleMusicService() {
+  static BaseMusicService createAppleMusicService() {
     if (_shouldUseMockForAppleMusic()) {
       return MockAppleMusicService(
         teamId: 'mock_apple_team_id',
@@ -65,7 +65,7 @@ class MusicServiceFactory {
   static String get mockServicesConfig => _mockServicesConfig;
 
   /// For testing purposes - force mock services regardless of environment
-  static SpotifyServiceInterface createMockSpotifyService() {
+  static BaseMusicService createMockSpotifyService() {
     return MockSpotifyService(
       clientId: 'test_spotify_client_id',
       clientSecret: 'test_spotify_client_secret',
@@ -73,7 +73,7 @@ class MusicServiceFactory {
   }
 
   /// For testing purposes - force mock Apple Music service regardless of environment
-  static AppleMusicServiceInterface createMockAppleMusicService() {
+  static BaseMusicService createMockAppleMusicService() {
     return MockAppleMusicService(
       teamId: 'test_apple_team_id',
       keyId: 'test_apple_key_id',
@@ -82,7 +82,7 @@ class MusicServiceFactory {
   }
 
   /// For testing purposes - force real services regardless of environment
-  static SpotifyServiceInterface createRealSpotifyService({
+  static BaseMusicService createRealSpotifyService({
     required String clientId,
     required String clientSecret,
   }) {
@@ -93,7 +93,7 @@ class MusicServiceFactory {
   }
 
   /// For testing purposes - force real Apple Music service regardless of environment
-  static AppleMusicServiceInterface createRealAppleMusicService({
+  static BaseMusicService createRealAppleMusicService({
     required String teamId,
     required String keyId,
     required String privateKeyPath,

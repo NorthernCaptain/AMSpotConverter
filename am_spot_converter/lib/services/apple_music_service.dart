@@ -7,7 +7,7 @@ import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import '../models/song.dart';
 import 'base_music_service.dart';
 
-class AppleMusicService implements AppleMusicServiceInterface {
+class AppleMusicService implements BaseMusicService {
   static const String _baseUrl = 'https://api.music.apple.com/v1';
 
   final String teamId;
@@ -65,15 +65,10 @@ class AppleMusicService implements AppleMusicServiceInterface {
 
   @override
   Future<Song?> getTrackById(String trackId) async {
-    return await getSongById(trackId);
-  }
-
-  @override
-  Future<Song?> getSongById(String songId) async {
     await _generateToken();
 
     final response = await http.get(
-      Uri.parse('$_baseUrl/catalog/us/songs/$songId'),
+      Uri.parse('$_baseUrl/catalog/us/songs/$trackId'),
       headers: {
         'Authorization': 'Bearer $_token',
       },
@@ -183,11 +178,6 @@ class AppleMusicService implements AppleMusicServiceInterface {
 
   @override
   String? extractTrackIdFromUrl(String url) {
-    return extractSongIdFromUrl(url);
-  }
-
-  @override
-  String? extractSongIdFromUrl(String url) {
     // Handle direct song URLs: music.apple.com/us/song/song-name/123456
     final RegExp songRegex = RegExp(r'music\.apple\.com/[^/]+/song/[^/]+/(\d+)');
     final songMatch = songRegex.firstMatch(url);

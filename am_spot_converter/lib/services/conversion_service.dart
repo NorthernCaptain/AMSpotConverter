@@ -3,8 +3,8 @@ import '../models/conversion_result.dart';
 import 'base_music_service.dart';
 
 class ConversionService {
-  final SpotifyServiceInterface spotifyService;
-  final AppleMusicServiceInterface appleMusicService;
+  final BaseMusicService spotifyService;
+  final BaseMusicService appleMusicService;
 
   ConversionService({
     required this.spotifyService,
@@ -58,9 +58,9 @@ class ConversionService {
   }
 
   Future<Song?> _getAppleMusicSong(String url) async {
-    final songId = appleMusicService.extractSongIdFromUrl(url);
-    if (songId != null) {
-      return await appleMusicService.getSongById(songId);
+    final trackId = appleMusicService.extractTrackIdFromUrl(url);
+    if (trackId != null) {
+      return await appleMusicService.getTrackById(trackId);
     }
 
     final albumId = appleMusicService.extractAlbumIdFromUrl(url);

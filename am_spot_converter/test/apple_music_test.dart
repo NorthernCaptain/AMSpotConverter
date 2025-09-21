@@ -19,7 +19,7 @@ void main() {
 
     test('Test URL parsing for album with track parameter', () {
       const testUrl = 'https://music.apple.com/us/album/run-run-run/1837020954?i=1837021188';
-      final trackId = service.extractSongIdFromUrl(testUrl);
+      final trackId = service.extractTrackIdFromUrl(testUrl);
 
       print('URL: $testUrl');
       print('Extracted Track ID: $trackId');
@@ -37,7 +37,7 @@ void main() {
       print('Private Key Path: ${dotenv.env['APPLE_MUSIC_PRIVATE_KEY_PATH']}');
 
       try {
-        final song = await service.getSongById(testTrackId);
+        final song = await service.getTrackById(testTrackId);
 
         if (song != null) {
           print('✅ SUCCESS: Retrieved song information');
@@ -65,7 +65,7 @@ void main() {
       try {
         // Access private method through reflection would be complex,
         // so let's test by making a request that requires a token
-        final song = await service.getSongById('1677770551');
+        final song = await service.getTrackById('1677770551');
         print('✅ Token generation appears to work (request succeeded)');
       } catch (e) {
         print('❌ Token generation or API request failed: $e');
