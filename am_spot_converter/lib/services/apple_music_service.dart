@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
@@ -30,14 +31,8 @@ class AppleMusicService implements AppleMusicServiceInterface {
     }
 
     try {
-      print('🔍 Generating new Apple Music JWT token...');
-      print('🔍 Team ID: $teamId');
-      print('🔍 Key ID: $keyId');
-      print('🔍 Private Key Path: $privateKeyPath');
-
       // Read private key as an asset
       final privateKeyContent = await rootBundle.loadString(privateKeyPath);
-      print('🔍 Private key loaded successfully (${privateKeyContent.length} characters)');
 
       final now = DateTime.now();
       final iat = now.millisecondsSinceEpoch ~/ 1000;
@@ -48,8 +43,6 @@ class AppleMusicService implements AppleMusicServiceInterface {
         'iat': iat,
         'exp': exp,
       };
-
-      print('🔍 JWT Payload: $payload');
 
       final jwt = JWT(
         payload,
@@ -63,14 +56,9 @@ class AppleMusicService implements AppleMusicServiceInterface {
         algorithm: JWTAlgorithm.ES256,
       );
 
-      print('🔍 JWT Token generated successfully');
-      print('🔍 Token length: ${_token!.length}');
-      print('🔍 Token preview: ${_token!.substring(0, 50)}...');
-
       _tokenExpiry = DateTime.now().add(Duration(minutes: 50));
     } catch (e, stackTrace) {
-      print('❌ Failed to generate Apple Music token: $e');
-      print('❌ Stack trace: $stackTrace');
+      debugPrint('❌ Failed to generate Apple Music token: $e');
       throw Exception('Failed to generate Apple Music token: $e');
     }
   }
@@ -84,29 +72,19 @@ class AppleMusicService implements AppleMusicServiceInterface {
   Future<Song?> getSongById(String songId) async {
     await _generateToken();
 
-    final url = '$_baseUrl/catalog/us/songs/$songId';
-    print('🔍 Apple Music API Request: $url');
-
     final response = await http.get(
-      Uri.parse(url),
+      Uri.parse('$_baseUrl/catalog/us/songs/$songId'),
       headers: {
         'Authorization': 'Bearer $_token',
       },
     );
-
-    print('🔍 API Response Status: ${response.statusCode}');
-    print('🔍 API Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final songs = data['data'] as List;
       if (songs.isNotEmpty) {
         return _createSongFromAppleMusicTrack(songs[0]);
-      } else {
-        print('❌ No songs found in API response');
       }
-    } else {
-      print('❌ API request failed with status ${response.statusCode}: ${response.body}');
     }
     return null;
   }
